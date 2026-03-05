@@ -411,3 +411,44 @@ header {
 .wrong-q { color: #333; max-width: 400px; }
 .wrong-a { color: #e03131; font-style: italic; width: 160px; }
 .wrong-count { color: #888; width: 32px; text-align: right; }
+
+/* ── Filter bar ── */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1.5px solid #d0d0d0;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  font-family: inherit;
+}
+
+.filter-btn:hover {
+  border-color: #888;
+  color: #121212;
+}
+
+.filter-btn.active {
+  background: #121212;
+  border-color: #121212;
+  color: #fff;
+}
+
+.filter-count {
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.7;
+}

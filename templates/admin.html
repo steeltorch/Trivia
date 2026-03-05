@@ -109,7 +109,22 @@
     <!-- ── Question Sets ── -->
     <div class="section-title-row">
       <div class="section-title" style="margin-bottom:0">Question Sets</div>
-      <span class="set-count">{{ sets|length }} sets</span>
+      <span class="set-count" id="set-count-label">{{ sets|length }} sets</span>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">All <span class="filter-count">{{ sets|length }}</span></button>
+      {% for cat in categories %}
+      {% set cat_sets = sets|selectattr('category_id', 'equalto', cat.id)|list %}
+      {% if cat_sets|length > 0 %}
+      <button class="filter-btn" data-filter="cat-{{ cat.id }}">{{ cat.name }} <span class="filter-count">{{ cat_sets|length }}</span></button>
+      {% endif %}
+      {% endfor %}
+      {% set uncategorized = sets|selectattr('category_id', 'none')|list %}
+      {% if uncategorized|length > 0 %}
+      <button class="filter-btn" data-filter="uncategorized">Uncategorized <span class="filter-count">{{ uncategorized|length }}</span></button>
+      {% endif %}
     </div>
 
     <!-- Add new set -->
@@ -131,7 +146,7 @@
 
     <!-- Existing sets -->
     {% for s in sets %}
-    <div class="card set-card" id="set-{{ s.id }}">
+    <div class="card set-card" id="set-{{ s.id }}" data-category-id="{{ s.category_id or '' }}">
       <div class="set-header">
         <form method="POST" action="/admin/set/{{ s.id }}/edit" class="set-edit-form">
           <div class="set-edit-top">
@@ -212,5 +227,38 @@
     {% endfor %}
 
   </div>
+
+  <script>
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const setCards = document.querySelectorAll('.set-card');
+    const countLabel = document.getElementById('set-count-label');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.dataset.filter;
+        let visible = 0;
+        setCards.forEach(card => {
+          let show = false;
+          if (filter === 'all') {
+            show = true;
+          } else if (filter === 'uncategorized') {
+            show = card.dataset.categoryId === '';
+          } else {
+            const catId = filter.replace('cat-', '');
+            show = card.dataset.categoryId === catId;
+          }
+          card.style.display = show ? '' : 'none';
+          if (show) visible++;
+        });
+
+        countLabel.textContent = filter === 'all'
+          ? `${visible} sets`
+          : `${visible} of ${setCards.length} sets`;
+      });
+    });
+  </script>
 </body>
 </html>
