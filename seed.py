@@ -93,7 +93,7 @@ DAILY_SETS = [
         "questions": [
             {"question": "This ancient Greek philosopher, teacher of Plato, was sentenced to death by drinking hemlock.", "answer": "Socrates"},
             {"question": "This German philosopher wrote 'Thus Spoke Zarathustra' and is known for the declaration 'God is dead.'", "answer": "Friedrich Nietzsche"},
-            {"question": "This French existentialist wrote 'Being and Nothingness' and famously refused the Nobel Prize in Literature.", "answer": "Jean-Paul Sartre"},
+            {"question": This French philosopher is most commonly known for his philosophical statement "cogito, ergo sum"., "answer": "Rene Descartes"},
         ],
     },
     {
