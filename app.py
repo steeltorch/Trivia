@@ -319,6 +319,10 @@ def admin_delete_question(q_id):
 with app.app_context():
     conn = get_db()
     migrate(conn)
+    # Auto-seed if database is empty
+    if conn.execute("SELECT COUNT(*) FROM daily_sets").fetchone()[0] == 0:
+        import seed as _seed
+        _seed.seed(conn)
     conn.close()
 
 if __name__ == "__main__":
