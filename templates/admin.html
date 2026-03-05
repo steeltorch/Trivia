@@ -17,6 +17,71 @@
 
   <div class="admin-container">
 
+    <!-- ── Stats ── -->
+    <div class="section-title" id="stats">Stats</div>
+    <div class="card stats-card">
+      {% if stats.total_plays == 0 %}
+        <p class="empty-note">No plays recorded yet.</p>
+      {% else %}
+        <div class="stats-top">
+          <div class="stat-block">
+            <div class="stat-value">{{ stats.total_plays }}</div>
+            <div class="stat-label">Total Plays</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-value">{{ stats.avg_score }}%</div>
+            <div class="stat-label">Avg Score</div>
+          </div>
+        </div>
+
+        <div class="stats-section-label">Score Distribution</div>
+        <div class="score-dist">
+          {% for row in stats.score_dist %}
+          <div class="dist-row">
+            <span class="dist-label">{{ row.score }}/{{ row.total }}</span>
+            <div class="dist-bar-wrap">
+              <div class="dist-bar" style="width: {{ (row.count / stats.total_plays * 100)|round|int }}%"></div>
+            </div>
+            <span class="dist-count">{{ row.count }}</span>
+          </div>
+          {% endfor %}
+        </div>
+
+        {% if stats.plays_by_day %}
+        <div class="stats-section-label">Plays by Day</div>
+        <div class="plays-by-day">
+          {% for row in stats.plays_by_day %}
+          <div class="day-row">
+            <span class="day-label">{{ row.day }}</span>
+            <div class="dist-bar-wrap">
+              <div class="dist-bar" style="width: {{ (row.count / stats.plays_by_day|map(attribute='count')|max * 100)|round|int }}%"></div>
+            </div>
+            <span class="dist-count">{{ row.count }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if stats.wrong_answers %}
+        <div class="stats-section-label">Most Common Wrong Answers</div>
+        <table class="wrong-table">
+          <thead>
+            <tr><th>Question</th><th>User Typed</th><th>#</th></tr>
+          </thead>
+          <tbody>
+            {% for row in stats.wrong_answers %}
+            <tr>
+              <td class="wrong-q">{{ row.question }}</td>
+              <td class="wrong-a">{{ row.user_answer }}</td>
+              <td class="wrong-count">{{ row.count }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+      {% endif %}
+    </div>
+
     <!-- ── Categories ── -->
     <div class="section-title" id="categories">Categories</div>
 

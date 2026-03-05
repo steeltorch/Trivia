@@ -44,6 +44,23 @@ def migrate(conn):
             id   INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL UNIQUE
         );
+
+        CREATE TABLE IF NOT EXISTS plays (
+            id        INTEGER PRIMARY KEY AUTOINCREMENT,
+            set_id    INTEGER REFERENCES daily_sets(id),
+            score     INTEGER NOT NULL,
+            total     INTEGER NOT NULL,
+            elapsed   INTEGER NOT NULL DEFAULT 0,
+            played_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+
+        CREATE TABLE IF NOT EXISTS play_answers (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            play_id     INTEGER NOT NULL REFERENCES plays(id) ON DELETE CASCADE,
+            question_id INTEGER REFERENCES questions(id),
+            user_answer TEXT NOT NULL,
+            correct     INTEGER NOT NULL
+        );
     """)
 
     # Add category_id column to daily_sets if it doesn't exist yet
@@ -99,10 +116,11 @@ def get_today_set(conn):
     if not row:
         return None
     questions = conn.execute(
-        "SELECT question, answer FROM questions WHERE set_id = ? ORDER BY sort_order",
+        "SELECT id, question, answer FROM questions WHERE set_id = ? ORDER BY sort_order",
         (row["id"],),
     ).fetchall()
     return {
+        "set_id": row["id"],
         "theme": row["theme"],
         "category": row["category_name"],
         "questions": [dict(q) for q in questions],
@@ -165,8 +183,8 @@ def submit():
 
     conn = get_db()
     puzzle = get_today_set(conn)
-    conn.close()
     if not puzzle:
+        conn.close()
         return jsonify({"error": "No questions in database"}), 503
 
     results = []
@@ -177,14 +195,69 @@ def submit():
             "correct": correct,
             "correct_answer": q["answer"],
             "user_answer": user_ans,
+            "question_id": q["id"],
         })
 
+    score = sum(1 for r in results if r["correct"])
+    cur = conn.execute(
+        "INSERT INTO plays (set_id, score, total, elapsed) VALUES (?, ?, ?, ?)",
+        (puzzle["set_id"], score, len(puzzle["questions"]), elapsed),
+    )
+    play_id = cur.lastrowid
+    for r in results:
+        conn.execute(
+            "INSERT INTO play_answers (play_id, question_id, user_answer, correct) VALUES (?, ?, ?, ?)",
+            (play_id, r["question_id"], r["user_answer"], 1 if r["correct"] else 0),
+        )
+    conn.commit()
+    conn.close()
+
     return jsonify({
-        "results": results,
-        "score": sum(1 for r in results if r["correct"]),
+        "results": [{k: v for k, v in r.items() if k != "question_id"} for r in results],
+        "score": score,
         "total": len(puzzle["questions"]),
         "elapsed": elapsed,
     })
+
+
+# ── Stats ──────────────────────────────────────────────────────────────────────
+
+def get_stats(conn):
+    total_plays = conn.execute("SELECT COUNT(*) FROM plays").fetchone()[0]
+    if total_plays == 0:
+        return {"total_plays": 0, "avg_score": 0, "score_dist": [], "plays_by_day": [], "wrong_answers": []}
+
+    avg_score = conn.execute("SELECT ROUND(AVG(score * 100.0 / total), 1) FROM plays").fetchone()[0]
+
+    dist_rows = conn.execute("""
+        SELECT score, total, COUNT(*) as count FROM plays
+        GROUP BY score, total ORDER BY score
+    """).fetchall()
+    score_dist = [dict(r) for r in dist_rows]
+
+    plays_by_day = conn.execute("""
+        SELECT DATE(played_at) as day, COUNT(*) as count FROM plays
+        GROUP BY DATE(played_at) ORDER BY day DESC LIMIT 14
+    """).fetchall()
+    plays_by_day = [dict(r) for r in reversed(plays_by_day)]
+
+    wrong_answers = conn.execute("""
+        SELECT q.question, pa.user_answer, COUNT(*) as count
+        FROM play_answers pa
+        JOIN questions q ON q.id = pa.question_id
+        WHERE pa.correct = 0 AND pa.user_answer != ''
+        GROUP BY q.id, pa.user_answer
+        ORDER BY count DESC LIMIT 20
+    """).fetchall()
+    wrong_answers = [dict(r) for r in wrong_answers]
+
+    return {
+        "total_plays": total_plays,
+        "avg_score": avg_score,
+        "score_dist": score_dist,
+        "plays_by_day": plays_by_day,
+        "wrong_answers": wrong_answers,
+    }
 
 
 # ── Admin: categories ──────────────────────────────────────────────────────────
@@ -194,8 +267,9 @@ def admin():
     conn = get_db()
     sets = get_all_sets(conn)
     categories = conn.execute("SELECT * FROM categories ORDER BY name").fetchall()
+    stats = get_stats(conn)
     conn.close()
-    return render_template("admin.html", sets=sets, categories=categories)
+    return render_template("admin.html", sets=sets, categories=categories, stats=stats)
 
 
 @app.route("/admin/category/new", methods=["POST"])
