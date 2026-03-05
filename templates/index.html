@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Trivia</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <header>
+    <div class="site-title">Daily Trivia</div>
+    <div class="header-date" id="header-date"></div>
+  </header>
+
+  <div class="container">
+
+    <!-- Start Screen -->
+    <div id="start-screen" class="screen active">
+      <div class="start-inner">
+        <div id="start-category-wrap" class="category-wrap hidden">
+          <span class="category-pill" id="start-category"></span>
+        </div>
+        <div class="theme-label">Today's Theme</div>
+        <div class="theme-title" id="start-theme"></div>
+        <p class="start-description">3 questions. Type your answers — spelling doesn't have to be perfect.</p>
+        <button id="start-btn" class="btn-primary">Start Puzzle</button>
+      </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen">
+      <div class="game-header">
+        <div id="game-category-wrap" class="category-wrap hidden">
+          <span class="category-pill" id="game-category"></span>
+        </div>
+        <div class="theme-label">Today's Theme</div>
+        <div class="theme-title" id="game-theme"></div>
+      </div>
+
+      <div class="timer-wrap">
+        <div class="timer-label">Time</div>
+        <div class="timer-value" id="timer">0:00</div>
+      </div>
+
+      <div id="questions-container"></div>
+
+      <div class="submit-row">
+        <button id="submit-btn" class="btn-primary">Submit Answers</button>
+      </div>
+
+      <div id="result-panel" class="result-panel">
+        <div class="score-dots" id="score-dots"></div>
+        <div class="result-score" id="result-score"></div>
+        <div class="result-points" id="result-points"></div>
+        <div class="result-time" id="result-time"></div>
+        <div id="result-category-wrap" class="result-category-wrap hidden">
+          <span class="result-category-label">Category</span>
+          <span class="category-pill" id="result-category"></span>
+        </div>
+        <div class="result-message" id="result-message"></div>
+        <div class="result-share" id="result-share"></div>
+        <div class="next-puzzle-wrap">
+          <div class="next-puzzle-label">Next puzzle in</div>
+          <div class="countdown-value" id="result-countdown">--:--:--</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Locked Screen (already played today) -->
+    <div id="locked-screen" class="screen">
+      <div class="locked-inner">
+        <div class="locked-top">
+          <div id="locked-category-wrap" class="category-wrap hidden">
+            <span class="category-pill" id="locked-category"></span>
+          </div>
+          <div class="theme-label">Today's Theme</div>
+          <div class="theme-title" id="locked-theme"></div>
+        </div>
+
+        <div class="locked-played-tag">You've played today's puzzle</div>
+
+        <div class="locked-results">
+          <div class="score-dots" id="locked-dots"></div>
+          <div class="result-score" id="locked-score"></div>
+          <div class="result-points" id="locked-points"></div>
+          <div class="result-time" id="locked-time"></div>
+          <div class="result-share" id="locked-share"></div>
+        </div>
+
+        <div class="locked-divider"></div>
+
+        <div class="next-puzzle-wrap">
+          <div class="next-puzzle-label">Next puzzle in</div>
+          <div class="countdown-value" id="locked-countdown">--:--:--</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/static/js/game.js"></script>
+</body>
+</html>

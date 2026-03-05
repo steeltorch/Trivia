@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Daily Trivia</title>
+  <link rel="stylesheet" href="/static/css/admin.css" />
+</head>
+<body>
+  <header>
+    <div class="admin-header">
+      <span class="site-title">Daily Trivia</span>
+      <span class="admin-badge">Admin</span>
+    </div>
+    <a href="/" class="back-link">← View Game</a>
+  </header>
+
+  <div class="admin-container">
+
+    <!-- ── Categories ── -->
+    <div class="section-title" id="categories">Categories</div>
+
+    <div class="card categories-card">
+      <div class="category-list">
+        {% for cat in categories %}
+        <div class="category-chip">
+          <span>{{ cat.name }}</span>
+          <form method="POST" action="/admin/category/{{ cat.id }}/delete"
+                onsubmit="return confirm('Delete category \'{{ cat.name }}\'? Sets using it will become uncategorized.')">
+            <button type="submit" class="chip-delete" title="Delete">✕</button>
+          </form>
+        </div>
+        {% else %}
+        <span class="empty-note">No categories yet.</span>
+        {% endfor %}
+      </div>
+
+      <form method="POST" action="/admin/category/new" class="inline-form new-category-form">
+        <input type="text" name="name" placeholder="New category name..." required class="text-input" />
+        <button type="submit" class="btn-add">Add Category</button>
+      </form>
+    </div>
+
+    <!-- ── Question Sets ── -->
+    <div class="section-title-row">
+      <div class="section-title" style="margin-bottom:0">Question Sets</div>
+      <span class="set-count">{{ sets|length }} sets</span>
+    </div>
+
+    <!-- Add new set -->
+    <div class="card new-set-card">
+      <h2>Add New Set</h2>
+      <form method="POST" action="/admin/set/new" class="new-set-form">
+        <input type="text" name="theme" placeholder="Theme name (e.g. Famous Scientists)" required class="text-input theme-input-lg" />
+        <div class="new-set-row">
+          <select name="category_id" class="category-select">
+            <option value="">— No category —</option>
+            {% for cat in categories %}
+            <option value="{{ cat.id }}">{{ cat.name }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn-add">Add Set</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Existing sets -->
+    {% for s in sets %}
+    <div class="card set-card" id="set-{{ s.id }}">
+      <div class="set-header">
+        <form method="POST" action="/admin/set/{{ s.id }}/edit" class="set-edit-form">
+          <div class="set-edit-top">
+            <input type="text" name="theme" value="{{ s.theme }}" required class="text-input theme-input" />
+            <button type="submit" class="btn-save">Save</button>
+          </div>
+          <div class="set-edit-bottom">
+            <label class="field-label">Category</label>
+            <select name="category_id" class="category-select">
+              <option value="">— None —</option>
+              {% for cat in categories %}
+              <option value="{{ cat.id }}" {% if cat.id == s.category_id %}selected{% endif %}>
+                {{ cat.name }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+        </form>
+        <form method="POST" action="/admin/set/{{ s.id }}/delete"
+              onsubmit="return confirm('Delete this entire set and all its questions?')">
+          <button type="submit" class="btn-delete">Delete Set</button>
+        </form>
+      </div>
+
+      {% if s.category_name %}
+      <div class="set-category-preview">
+        <span class="category-pill">{{ s.category_name }}</span>
+      </div>
+      {% endif %}
+
+      <!-- Questions -->
+      <table class="questions-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Question</th>
+            <th>Answer</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for q in s.questions %}
+          <tr>
+            <td class="order-cell">{{ loop.index }}</td>
+            <td>
+              <form method="POST" action="/admin/question/{{ q.id }}/edit" class="row-edit-form">
+                <textarea name="question" required class="q-textarea">{{ q.question }}</textarea>
+                <input type="text" name="answer" value="{{ q.answer }}" required class="a-input" />
+                <button type="submit" class="btn-save btn-sm">Save</button>
+              </form>
+            </td>
+            <td class="answer-preview">{{ q.answer }}</td>
+            <td class="action-cell">
+              <form method="POST" action="/admin/question/{{ q.id }}/delete"
+                    onsubmit="return confirm('Delete this question?')">
+                <button type="submit" class="btn-delete btn-sm">✕</button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" class="empty-row">No questions yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <!-- Add question -->
+      <details class="add-question-details">
+        <summary>+ Add Question</summary>
+        <form method="POST" action="/admin/set/{{ s.id }}/question/new" class="add-question-form">
+          <label>Question</label>
+          <textarea name="question" required class="q-textarea" placeholder="Enter the question text..."></textarea>
+          <label>Answer</label>
+          <input type="text" name="answer" required class="a-input" placeholder="Enter the answer..." />
+          <button type="submit" class="btn-add">Add Question</button>
+        </form>
+      </details>
+    </div>
+    {% endfor %}
+
+  </div>
+</body>
+</html>

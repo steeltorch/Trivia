@@ -1,0 +1,441 @@
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  background: #ffffff;
+  color: #121212;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header ── */
+header {
+  border-bottom: 1px solid #e2e2e2;
+  padding: 14px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.site-title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: #121212;
+}
+
+.header-date {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 12px;
+  color: #727272;
+  letter-spacing: 0.2px;
+}
+
+/* ── Layout ── */
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+}
+
+/* ── Screens ── */
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+/* ── Start Screen ── */
+.start-inner {
+  text-align: center;
+  padding: 48px 0 32px;
+}
+
+.start-description {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  color: #555;
+  margin: 12px 0 32px;
+  line-height: 1.6;
+}
+
+/* ── Theme labels ── */
+.theme-label {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: #727272;
+  margin-bottom: 5px;
+}
+
+.theme-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #121212;
+  line-height: 1.2;
+}
+
+/* ── Category badge ── */
+.category-wrap {
+  margin-bottom: 10px;
+}
+
+.category-wrap.hidden {
+  display: none;
+}
+
+.category-pill {
+  display: inline-block;
+  background: #f0f0f0;
+  color: #444;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid #d8d8d8;
+}
+
+/* ── Game Header ── */
+.game-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+/* ── Timer ── */
+.timer-wrap {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.timer-value {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 42px;
+  font-weight: 300;
+  letter-spacing: 3px;
+  color: #c0c0c0;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.3s;
+}
+
+.timer-value.running {
+  color: #121212;
+}
+
+/* ── Question Cards ── */
+.question-card {
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+  padding: 22px 20px;
+  margin-bottom: 14px;
+}
+
+.question-number {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: #727272;
+  margin-bottom: 10px;
+}
+
+.question-text {
+  font-size: 17px;
+  line-height: 1.55;
+  color: #121212;
+  margin-bottom: 18px;
+}
+
+.answer-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #d0d0d0;
+  border-radius: 3px;
+  font-size: 16px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: #121212;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.answer-input:focus {
+  border-color: #326891;
+}
+
+.answer-input.correct {
+  border-color: #4caf50;
+  background: #f4fbf4;
+  color: #2e7d32;
+}
+
+.answer-input.incorrect {
+  border-color: #e03131;
+  background: #fff5f5;
+  color: #c62828;
+}
+
+.answer-input:disabled {
+  cursor: default;
+}
+
+.answer-feedback {
+  margin-top: 8px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  display: none;
+}
+
+.answer-feedback.correct {
+  display: block;
+  color: #2e7d32;
+}
+
+.answer-feedback.incorrect {
+  display: block;
+  color: #c62828;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  display: inline-block;
+  background: #121212;
+  color: #fff;
+  border: none;
+  padding: 14px 52px;
+  font-size: 15px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-primary:hover {
+  background: #333;
+}
+
+.btn-primary:disabled {
+  background: #bbb;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  display: inline-block;
+  background: #fff;
+  color: #121212;
+  border: 1.5px solid #121212;
+  padding: 12px 40px;
+  font-size: 14px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-weight: 700;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-secondary:hover {
+  background: #121212;
+  color: #fff;
+}
+
+/* ── Submit Row ── */
+.submit-row {
+  margin-top: 24px;
+  text-align: center;
+}
+
+/* ── Result Panel ── */
+.result-panel {
+  display: none;
+  margin-top: 32px;
+  padding: 28px 24px;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+  background: #fafafa;
+  text-align: center;
+}
+
+.result-panel.visible {
+  display: block;
+}
+
+.score-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.score-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #d0d0d0;
+}
+
+.score-dot.correct {
+  background: #4caf50;
+}
+
+.score-dot.incorrect {
+  background: #e03131;
+}
+
+.result-score {
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.result-time {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  color: #727272;
+  margin-bottom: 12px;
+}
+
+.result-points {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2e7d32;
+  margin-bottom: 6px;
+}
+
+.result-category-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.result-category-wrap.hidden {
+  display: none;
+}
+
+.result-category-label {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #999;
+}
+
+.result-message {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.result-share {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  color: #727272;
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Countdown (in result panel + locked screen) ── */
+.next-puzzle-wrap {
+  border-top: 1px solid #e8e8e8;
+  margin-top: 20px;
+  padding-top: 20px;
+}
+
+.next-puzzle-label {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 6px;
+}
+
+.countdown-value {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 40px;
+  font-weight: 300;
+  letter-spacing: 3px;
+  color: #121212;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Locked Screen ── */
+.locked-inner {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 40px 0 32px;
+  text-align: center;
+}
+
+.locked-top {
+  margin-bottom: 20px;
+}
+
+.locked-played-tag {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 24px;
+}
+
+.locked-results {
+  background: #fafafa;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+  padding: 24px;
+  margin-bottom: 0;
+}
+
+.locked-divider {
+  height: 1px;
+  background: #e8e8e8;
+  margin: 24px 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .site-title {
+    font-size: 22px;
+  }
+
+  .theme-title {
+    font-size: 19px;
+  }
+
+  .timer-value {
+    font-size: 34px;
+  }
+
+  .question-text {
+    font-size: 16px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 13px 32px;
+    width: 100%;
+  }
+}
